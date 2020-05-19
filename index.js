@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser'); // express middleware
 const keys = require('./config/keys');
 require('./models/User');
 require('./services/passport'); // because nothing is exported in the passport.js
@@ -11,6 +12,8 @@ mongoose.connect(keys.mongoURI);
 
 const app = express();
 
+app.use(bodyParser.json()); // POST, PUT, PATCH request comes into the body, this middleware will assign
+                            // to req.body
 app.use(
     cookieSession({
         maxAge: 30 * 24 * 60 * 60 * 1000, // How long the cookie exists (last 30 days)
@@ -23,6 +26,7 @@ app.use(passport.session());
 
 // authRoutes(app);
 require('./routes/authRoutes')(app);
+require('./routes/billingRoutes')(app); // returns a function that takes the app as parameter
 
 const PORT = process.env.PORT || 5000; // The prior statement will be called if there app is running on Heroku
 app.listen(PORT);
