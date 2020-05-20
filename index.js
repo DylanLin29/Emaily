@@ -5,6 +5,7 @@ const passport = require('passport');
 const bodyParser = require('body-parser'); // express middleware
 const keys = require('./config/keys');
 require('./models/User');
+require('./models/Survey');
 require('./services/passport'); // because nothing is exported in the passport.js
 // const authRoutes = require('./routes/authRoutes');
 
@@ -24,9 +25,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Setup route handlers
 // authRoutes(app);
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app); // returns a function that takes the app as parameter
+require('./routes/surveyRoutes')(app);
 
 if (process.env.NODE_ENV === 'production') {
     // Express will server up production assets
